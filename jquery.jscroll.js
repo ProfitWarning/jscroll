@@ -30,7 +30,8 @@
             nextSelector: 'a:last',
             contentSelector: '',
             pagingSelector: '',
-            callback: false
+            callback: false,
+            dataHref: 'jscroll-href'
         }
     };
 
@@ -46,7 +47,7 @@
             _$window = $(window),
             _$body = $('body'),
             _$scroll = _isWindow ? _$window : $e,
-            _nextHref = $.trim(_$next.attr('href') + ' ' + _options.contentSelector),
+            _nextHref = _$next.data(_options.dataHref) === undefined ? $.trim(_$next.attr('href') + ' ' + _options.contentSelector) : _$next.data(_options.dataHref),
 
             // Check if a loading image is defined and preload
             _preloadImage = function() {
@@ -97,6 +98,7 @@
                         iTopHeight = _isWindow ? _$scroll.scrollTop() : $e.offset().top,
                         innerTop = $inner.length ? $inner.offset().top : 0,
                         iTotalHeight = Math.ceil(iTopHeight - innerTop + _$scroll.height() + iContainerTop);
+
 
                     if (!data.waiting && iTotalHeight + _options.padding >= $inner.outerHeight()) {
                         //data.nextHref = $.trim(data.nextHref + ' ' + _options.contentSelector);
