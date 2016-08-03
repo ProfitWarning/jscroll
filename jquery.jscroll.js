@@ -48,7 +48,7 @@
             _$window = $(window),
             _$body = $('body'),
             _$scroll = _isWindow ? _$window : $e,
-            _nextHref = _$next.data(_options.dataHref) === undefined ? $.trim(_$next.attr('href') + ' ' + _options.contentSelector) : _$next.data(_options.dataHref),
+            _nextHref = _$next.data(_options.dataHref) === undefined ? $.trim(_$next.attr('href') + ' ' + _options.contentSelector) : _$next.data(_options.dataHref) + ' ' + _options.contentSelector,
 
             // Check if a loading image is defined and preload
             _preloadImage = function() {
