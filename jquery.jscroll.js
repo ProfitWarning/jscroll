@@ -22,7 +22,7 @@
     // Define the jscroll namespace and default settings
     $.jscroll = {
         defaults: {
-            debug: false,
+            debug: true,
             autoTrigger: true,
             autoTriggerUntil: false,
             loadingHtml: '<small>Loading...</small>',
@@ -35,10 +35,17 @@
             dataHref: 'jscroll-href'
         }
     };
+    // helpers
+    var getNextHref = function(_$next, _options) {
+        if(_$next.data(_options.dataHref) === undefined) {
+            return $_next.attr('href') ? $.trim(_$next.attr('href') + ' ' + _options.contentSelector) : false;
+        }
+
+        return _$next.data(_options.dataHref) + ' ' + _options.contentSelector;
+    };
 
     // Constructor
     var jScroll = function($e, options) {
-
         // Private vars and methods
         var _data = $e.data('jscroll'),
             _userOptions = (typeof options === 'function') ? { callback: options } : options,
@@ -48,7 +55,7 @@
             _$window = $(window),
             _$body = $('body'),
             _$scroll = _isWindow ? _$window : $e,
-            _nextHref = _$next.data(_options.dataHref) === undefined ? $.trim(_$next.attr('href') + ' ' + _options.contentSelector) : _$next.data(_options.dataHref) + ' ' + _options.contentSelector,
+            _nextHref = getNextHref(_$next, _options),
 
             // Check if a loading image is defined and preload
             _preloadImage = function() {
@@ -98,10 +105,10 @@
                         iContainerTop = parseInt($e.css('paddingTop'), 10) + borderTopWidthInt,
                         iTopHeight = _isWindow ? _$scroll.scrollTop() : $e.offset().top,
                         innerTop = $inner.length ? $inner.offset().top : 0,
-                        iTotalHeight = Math.ceil(iTopHeight - innerTop + _$scroll.height() + iContainerTop);
+                        iTotalHeight = Math.ceil(iTopHeight - innerTop + _$scroll.height() + iContainerTop),
+                        $resultsContainer = $(_options.paddingSelector);
 
-
-                    if (!data.waiting && iTotalHeight + _options.padding >= $inner.outerHeight()) {
+                    if (!data.waiting && iTotalHeight + _options.padding >= $resultsContainer.outerHeight()) {
                         //data.nextHref = $.trim(data.nextHref + ' ' + _options.contentSelector);
                         _debug('info', 'jScroll:', $inner.outerHeight() - iTotalHeight, 'from bottom. Loading next request...');
                         return _load();
@@ -174,7 +181,7 @@
                         }
                         var $next = $(this).find(_options.nextSelector).first();
                         data.waiting = false;
-                        data.nextHref = $next.attr('href') ? $.trim($next.attr('href') + ' ' + _options.contentSelector) : false;
+                        data.nextHref = getNextHref($next, _options);
                         $('.jscroll-next-parent', $e).remove(); // Remove the previous next link now that we have a new one
                         _checkNextHref();
                         if (_options.callback) {
