@@ -37,6 +37,9 @@
     };
     // helpers
     var getNextHref = function(_$next, _options) {
+        if (!_$next.length) {
+            return false;
+        }
         if(_$next.data(_options.dataHref) === undefined) {
             return $_next.attr('href') ? $.trim(_$next.attr('href') + ' ' + _options.contentSelector) : false;
         }
